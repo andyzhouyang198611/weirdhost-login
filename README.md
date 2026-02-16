@@ -1,5 +1,7 @@
 # ⭐ Star 星星走起 动动发财手点点 ⭐
 Weirdhost &amp; 自动续期 &amp; 多账号版
+
+### 注册地址：https://hub.weirdhost.xyz
 ### ✅ 需要添加的 Secrets
 
 > 进入仓库：**Settings → Secrets and variables → Actions → New repository secret**
