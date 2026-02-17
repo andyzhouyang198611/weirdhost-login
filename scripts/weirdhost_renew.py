@@ -881,7 +881,9 @@ def process_single_account(sb, account, account_index):
             
             return result
         
-        print(f"[+] 剩余 {remaining_days:.2f if remaining_days else '?'} 天 <= {RENEW_THRESHOLD_DAYS} 天，执行续期")
+        # 修复：先计算显示值，再放入 f-string
+        remaining_display = f"{remaining_days:.2f}" if remaining_days else "?"
+        print(f"[+] 剩余 {remaining_display} 天 <= {RENEW_THRESHOLD_DAYS} 天，执行续期")
 
         # ===== 步骤4: 点击侧栏续期按钮 =====
         print("\n[步骤4] 点击侧栏续期按钮")
