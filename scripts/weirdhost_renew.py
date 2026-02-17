@@ -812,17 +812,24 @@ def process_single_account(sb, account, account_index):
         # ===== 步骤1: 清除旧 Cookie 并设置新 Cookie =====
         print("\n[步骤1] 设置 Cookie")
         
-        activate_browser_window()
-        
-        try:
-            sb.uc_open_with_reconnect(f"https://{DOMAIN}", reconnect_time=3)
-            time.sleep(1)
-            sb.delete_all_cookies()
-        except:
-            pass
-        
-        sb.uc_open_with_reconnect(f"https://{DOMAIN}", reconnect_time=3)
+        # 等待浏览器稳定，不要立即调用 activate_browser_window
         time.sleep(2)
+        
+        # 第一次访问，用于清除 Cookie
+        try:
+            sb.open(f"https://{DOMAIN}")
+            time.sleep(2)
+            sb.delete_all_cookies()
+        except Exception as e:
+            print(f"[*] 初始化: {e}")
+        
+        # 第二次访问并设置 Cookie
+        try:
+            sb.open(f"https://{DOMAIN}")
+        except:
+            sb.uc_open_with_reconnect(f"https://{DOMAIN}", reconnect_time=5)
+        time.sleep(2)
+        
         sb.add_cookie({
             "name": cookie_name, "value": cookie_value,
             "domain": DOMAIN, "path": "/"
@@ -831,7 +838,10 @@ def process_single_account(sb, account, account_index):
 
         # ===== 步骤2: 访问服务器页面获取到期时间 =====
         print("\n[步骤2] 获取到期时间")
-        sb.uc_open_with_reconnect(server_url, reconnect_time=5)
+        try:
+            sb.open(server_url)
+        except:
+            sb.uc_open_with_reconnect(server_url, reconnect_time=5)
         time.sleep(3)
 
         if not is_logged_in(sb):
@@ -839,7 +849,10 @@ def process_single_account(sb, account, account_index):
                 "name": cookie_name, "value": cookie_value,
                 "domain": DOMAIN, "path": "/"
             })
-            sb.uc_open_with_reconnect(server_url, reconnect_time=5)
+            try:
+                sb.open(server_url)
+            except:
+                sb.uc_open_with_reconnect(server_url, reconnect_time=5)
             time.sleep(3)
 
         if not is_logged_in(sb):
@@ -916,7 +929,10 @@ def process_single_account(sb, account, account_index):
         print("\n[步骤6] 验证续期结果")
         time.sleep(3)
         
-        sb.uc_open_with_reconnect(server_url, reconnect_time=3)
+        try:
+            sb.open(server_url)
+        except:
+            sb.uc_open_with_reconnect(server_url, reconnect_time=3)
         time.sleep(3)
         
         new_expiry = get_expiry_from_page(sb)
